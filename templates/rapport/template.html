@@ -1,0 +1,14 @@
+<section class="cover-page">
+  {{#si logo}}<img class="cover-logo" src="{{logo}}" alt="Logo" />{{/si}}
+  <h1 class="cover-title">{{title}}</h1>
+  {{#si subtitle}}<p class="cover-subtitle">{{subtitle}}</p>{{/si}}
+  <div class="cover-meta">
+    {{#si author}}<p><strong>Auteur :</strong> {{author}}</p>{{/si}}
+    {{#si date}}<p><strong>Date :</strong> {{date}}</p>{{/si}}
+    {{#si version}}<p><strong>Version :</strong> {{version}}</p>{{/si}}
+  </div>
+</section>
+
+<article class="doc-content">
+  {{{content}}}
+</article>

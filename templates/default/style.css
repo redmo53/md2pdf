@@ -1,0 +1,238 @@
+/* ==========================================================================
+   MD2PDF — modèle "default"
+   La pagination, les marges, les en-têtes et les pieds de page sont pilotés
+   ici via CSS Paged Media (@page) et interprétés par Paged.js au moment de
+   la génération du PDF (voir converter.ts).
+   ========================================================================== */
+
+/* --- Impression fidèle des couleurs et bordures --------------------------
+   Sans cette propriété, Chromium peut omettre les couleurs de fond ET les
+   bordures fusionnées (border-collapse) à l'impression/export PDF, même
+   avec l'option "printBackground: true" côté Puppeteer : cette dernière
+   active le mécanisme, mais c'est cette propriété CSS qui en définit la
+   portée. C'est l'équivalent CSS de l'option "Imprimer les arrière-plans"
+   du dialogue d'impression d'un navigateur. */
+* {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  color-adjust: exact;
+}
+
+/* --- Mise en page générale de la feuille ------------------------------- */
+@page {
+  size: A4;
+  margin: 30mm 20mm 25mm 20mm;
+
+  /* En-tête : titre du document (capturé plus bas via string-set) */
+  @top-center {
+    content: string(doc-title);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 9pt;
+    color: #666666;
+  }
+
+  /* Pied de page : numérotation "Page X / Y" */
+  @bottom-center {
+    content: "Page " counter(page) " / " counter(pages);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 9pt;
+    color: #666666;
+  }
+
+  /* Exemple d'insertion directe d'un champ du front matter dans le pied de
+     page : {{auteur}} est remplacé par renderTemplate() (mode CSS) avant
+     que le CSS n'atteigne le navigateur. Vide si le champ est absent. */
+  @bottom-left {
+    content: "{{author}}";
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 8pt;
+    color: #aaaaaa;
+  }
+
+  @bottom-right {
+    content: "MD2PDF";
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 8pt;
+    color: #aaaaaa;
+  }
+}
+
+/* La toute première page n'affiche ni en-tête ni le nom de l'outil,
+   uniquement le pied de page avec la pagination. */
+@page :first {
+  @top-center {
+    content: "";
+  }
+  @bottom-right {
+    content: "";
+  }
+}
+
+/* --- Capture du titre pour l'en-tête courant (running header) ---------- */
+.doc-title {
+  string-set: doc-title content();
+}
+
+/* --- Typographie générale ----------------------------------------------- */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  color: #1a1a1a;
+}
+
+.document {
+  max-width: 100%;
+}
+
+/* --- En-tête de document (première page) -------------------------------- */
+.doc-header {
+  margin-bottom: 12mm;
+  border-bottom: 2pt solid #222222;
+  padding-bottom: 6mm;
+}
+
+.doc-title {
+  font-size: 26pt;
+  margin: 0 0 4pt 0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+}
+
+.doc-subtitle {
+  font-size: 14pt;
+  color: #444444;
+  margin: 0 0 8pt 0;
+  font-style: italic;
+}
+
+.doc-meta {
+  font-size: 9.5pt;
+  color: #666666;
+  margin: 0;
+}
+
+.doc-meta .doc-author::after {
+  content: " · ";
+}
+
+/* --- Corps du document --------------------------------------------------- */
+.doc-content h1 {
+  font-size: 20pt;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  margin-top: 16pt;
+  break-after: avoid;
+}
+
+.doc-content h2 {
+  font-size: 16pt;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  margin-top: 14pt;
+  break-after: avoid;
+  border-bottom: 1pt solid #dddddd;
+  padding-bottom: 2pt;
+}
+
+.doc-content h3 {
+  font-size: 13pt;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  break-after: avoid;
+}
+
+.doc-content p,
+.doc-content ul,
+.doc-content ol {
+  orphans: 3;
+  widows: 3;
+}
+
+.doc-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8pt 0;
+  break-inside: avoid;
+}
+
+.doc-content table th,
+.doc-content table td {
+  border: 1pt solid #cccccc;
+  padding: 4pt 6pt;
+  font-size: 10pt;
+}
+
+.doc-content table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.doc-content pre {
+  background-color: #f5f5f5;
+  border: 1pt solid #e0e0e0;
+  border-radius: 3pt;
+  padding: 8pt;
+  font-family: "Courier New", monospace;
+  font-size: 9.5pt;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  break-inside: avoid;
+}
+
+.doc-content code {
+  font-family: "Courier New", monospace;
+  background-color: #f0f0f0;
+  padding: 1pt 3pt;
+  border-radius: 2pt;
+  font-size: 0.95em;
+}
+
+.doc-content blockquote {
+  border-left: 3pt solid #999999;
+  margin: 8pt 0;
+  padding: 2pt 10pt;
+  color: #555555;
+  font-style: italic;
+}
+
+.doc-content img {
+  max-width: 100%;
+}
+
+/* --- Diagrammes Mermaid --------------------------------------------------- */
+.mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 10pt 0;
+  break-inside: avoid;
+}
+
+/* --- Formules mathématiques (KaTeX) --------------------------------------- */
+.katex-display {
+  margin: 8pt 0;
+  break-inside: avoid;
+  /* Si la formule est plus large que la zone de contenu : défilement dans
+     l'aperçu HTML (keepIntermediateHtml) ; à l'impression PDF, Chromium
+     découpe simplement l'excédent plutôt que de casser la mise en page. */
+  overflow-x: auto;
+}
+
+.katex {
+  font-size: 1.05em;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Note de bas de dernière page ----------------------------------------- */
+.doc-footer-note {
+  margin-top: 16pt;
+  font-size: 8pt;
+  color: #999999;
+  text-align: center;
+}

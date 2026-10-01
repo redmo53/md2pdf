@@ -1,0 +1,139 @@
+{
+  "name": "md2pdf",
+  "displayName": "MD2PDF",
+  "description": "Transforme un fichier Markdown (.md) en document PDF via un moteur de modèles HTML, avec support Mermaid.js et pagination Paged.js (en-têtes, pieds de page, marges en CSS @page).",
+  "version": "0.1.0",
+  "publisher": "redmo",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Formatters"
+  ],
+  "keywords": [
+    "markdown",
+    "pdf",
+    "mermaid",
+    "pagedjs",
+    "template"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:markdown"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "md2pdf.convertToPdf",
+        "title": "MD2PDF : Convertir en PDF",
+        "category": "MD2PDF",
+        "icon": "$(file-pdf)"
+      },
+      {
+        "command": "md2pdf.openGeneratedHtml",
+        "title": "MD2PDF : Ouvrir le HTML intermédiaire (debug)",
+        "category": "MD2PDF"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "md2pdf.convertToPdf",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p",
+        "when": "editorLangId == markdown"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "md2pdf.convertToPdf",
+          "when": "resourceLangId == markdown",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "md2pdf.convertToPdf",
+          "when": "editorLangId == markdown"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "md2pdf.convertToPdf",
+          "when": "resourceLangId == markdown",
+          "group": "7_modification"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "MD2PDF",
+      "properties": {
+        "md2pdf.defaultTemplate": {
+          "type": "string",
+          "default": "default",
+          "description": "Nom du modèle HTML utilisé quand le fichier .md ne précise pas de champ 'template' dans son en-tête (front matter)."
+        },
+        "md2pdf.templatesFolder": {
+          "type": "string",
+          "default": ".md2pdf/templates",
+          "description": "Dossier (relatif à la racine du workspace) dans lequel rechercher des modèles personnalisés avant d'utiliser les modèles fournis par l'extension."
+        },
+        "md2pdf.outputFolder": {
+          "type": "string",
+          "default": "",
+          "description": "Dossier de sortie pour les PDF générés (relatif au fichier .md). Vide = même dossier que le fichier source."
+        },
+        "md2pdf.keepIntermediateHtml": {
+          "type": "boolean",
+          "default": false,
+          "description": "Conserver le fichier HTML intermédiaire généré (utile pour déboguer un modèle) à côté du PDF."
+        },
+        "md2pdf.mermaidTheme": {
+          "type": "string",
+          "default": "default",
+          "enum": [
+            "default",
+            "neutral",
+            "dark",
+            "forest",
+            "base"
+          ],
+          "description": "Thème utilisé pour le rendu des diagrammes Mermaid.js."
+        },
+        "md2pdf.openAfterExport": {
+          "type": "boolean",
+          "default": true,
+          "description": "Ouvrir automatiquement le PDF généré après la conversion."
+        },
+        "md2pdf.chromiumExecutablePath": {
+          "type": "string",
+          "default": "",
+          "description": "Chemin vers un exécutable Chrome/Chromium à utiliser à la place du Chromium embarqué par Puppeteer (utile en environnement sans accès internet ou avec un Chrome déjà installé)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^13.0.7",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "katex": "^0.18.7",
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.0.1",
+    "markdown-it-texmath": "^1.0.0",
+    "mermaid": "^10.9.1",
+    "pagedjs": "^0.4.3",
+    "puppeteer": "^25.12.0"
+  }
+}

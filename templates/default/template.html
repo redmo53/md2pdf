@@ -1,0 +1,18 @@
+<div class="document">
+  <header class="doc-header">
+    <h1 class="doc-title">{{title}}</h1>
+    {{#si subtitle}}<p class="doc-subtitle">{{subtitle}}</p>{{/si}}
+    <p class="doc-meta">
+      {{#si author}}<span class="doc-author">{{author}}</span>{{/si}}
+      {{#si date}}<span class="doc-date">{{date}}</span>{{/si}}
+    </p>
+  </header>
+
+  <main class="doc-content">
+    {{{content}}}
+  </main>
+
+  <footer class="doc-footer-note">
+    <p>Document généré le {{generatedDate}} — {{sourceFileName}}.md</p>
+  </footer>
+</div>
